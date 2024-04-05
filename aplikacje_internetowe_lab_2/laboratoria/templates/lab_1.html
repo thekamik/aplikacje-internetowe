@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Kalkulator kredytowy</title>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">Kalkulator kredytowy</h2>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary btn-block">Oblicz</button>
+                </form>
+                {% if summary_data %}
+                <div class="alert alert-secondary mt-3">
+                    <p>Miesięczna rata: {{ summary_data.monthly_payment|floatformat:2 }} zł</p>
+                    <p>Całkowita kwota do spłaty: {{ summary_data.total_payment|floatformat:2 }} zł</p>
+                </div>
+                {% endif %}
+                <a href="{% url 'logout' %}" class="btn btn-danger btn-block mt-3">Wyloguj</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
