@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Kalkulator kredytowy</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2 class="text-center">Kalkulator kredytowy</h2>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary btn-block">Oblicz</button>
+                    <button type="submit" name="save" class="btn btn-success btn-block">Zapisz i Oblicz</button>
+                </form>
+                {% if summary_data %}
+                    <div class="alert alert-secondary mt-3">
+                        <p><strong>Miesięczna rata:</strong> {{ summary_data.monthly_payment|floatformat:2 }} zł</p>
+                        <p><strong>Całkowita kwota do spłaty:</strong> {{ summary_data.total_payment|floatformat:2 }} zł</p>
+                    </div>
+                {% endif %}
+                <a href="{% url 'logout' %}" class="btn btn-danger btn-block mt-3">Wyloguj</a>
+            </div>
+            <div class="card-body">
+                {% if all_entries %}
+                    <h2>Wcześniejsze Obliczenia:</h2>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Kwota Kredytu</th>
+                                <th>Oprocentowanie (w %)</th>
+                                <th>Okres spłaty (w latach)</th>
+                                <th>Miesięczna Rata</th>
+                                <th>Całkowita kwota do spłaty</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in all_entries %}
+                                <tr>
+                                    <td>{{ entry.amount }}</td>
+                                    <td>{{ entry.percentage }}</td>
+                                    <td>{{ entry.years }}</td>
+                                    <td>{{ entry.monthly_payment|floatformat:2 }} zł</td>
+                                    <td>{{ entry.total_payment|floatformat:2 }} zł</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
