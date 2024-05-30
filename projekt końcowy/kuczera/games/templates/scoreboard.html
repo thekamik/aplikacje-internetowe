@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tablica wyników{% endblock %}
+
+{% block head %}
+<!-- Custom styles for this template -->
+<link href="{% static 'list_view.css' %}" rel="stylesheet">
+{% endblock head %}
+
+{% block content %}
+<div class="container">
+    {% if user.is_staff %}
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Dodaj nowy wynik</h2>
+                </div>
+                <div class="panel-body">
+                    <form method="post" action="{% url 'scoreboard' %}" class="form-horizontal">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="id_game" class="col-sm-2 control-label">Nazwa Gry</label>
+                            <div class="col-sm-10">
+                                {{ form.game }}
+                                {{ form.game.errors }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_player" class="col-sm-2 control-label">Gracz</label>
+                            <div class="col-sm-10">
+                                {{ form.player }}
+                                {{ form.player.errors }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_player_score" class="col-sm-2 control-label">Wynik</label>
+                            <div class="col-sm-10">
+                                {{ form.player_score }}
+                                {{ form.player_score.errors }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">Dodaj</button>
+                            </div>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <h1 class="text-center">Tablica wyników</h1>
+
+    <div class="row">
+        <div class="col-md-12">
+            {% for score in all_scores %}
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>{{ score.player }}</h3>
+                    <p>Gra: {{ score.game.game_name }}</p>
+                    <p>Wynik: {{ score.player_score }}</p>
+                    <p>Data: {{ score.score_date }}</p>
+                    {% if user.is_staff %}
+                    <form method="post" action="{% url 'scoreboard' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="delete_entry" value="true">
+                        <input type="hidden" name="score_id" value="{{ score.id }}">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this?')">Delete</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
